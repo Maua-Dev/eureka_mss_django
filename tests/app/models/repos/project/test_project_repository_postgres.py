@@ -15,17 +15,19 @@ class TestProjectRepositoryPostgres(TransactionTestCase):
         User.objects.create(user_id=5, name='ANA PAULA GONCALVES SERRA', email='ana.serra@maua.br', role='RESPONSIBLE')
         User.objects.create(user_id=6, name='PAULO SIQUEIRA', email='paulo.siqueira@maua.br', role='STUDENT')
         project = Project.objects.create(title="Teste", qualification="Engenharia da Computação", code="ECOM000", shift="DIURNO", stand_number="1", is_entrepreneurship=False)
-        project.professors.add(4, 5)
+        project.advisors.add(4)
+        project.responsibles.add(5)
         project.students.add(1)
         project.save()
         
         project2 = Project.objects.create(title="Teste2", qualification="Engenharia da Computação", code="ECOM001", shift="DIURNO", stand_number="1", is_entrepreneurship=False)
-        project2.professors.add(4, 5)
+        project2.advisors.add(4)
+        project2.responsibles.add(5)
         project2.students.add(2)
         project2.save()
         
-        project3 = Project.objects.create(title="Teste3", qualification="Engenharia da Computação", code="ECOM001", shift="DIURNO", stand_number="1", is_entrepreneurship=False)
-        project3.professors.add(4)
+        project3 = Project.objects.create(title="Teste3", qualification="Engenharia da Computação", code="ECOM002", shift="DIURNO", stand_number="1", is_entrepreneurship=False)
+        project3.advisors.add(4)
         project3.students.add(3)
         project3.save()
         
@@ -53,17 +55,17 @@ class TestProjectRepositoryPostgres(TransactionTestCase):
         repo = ProjectRepositoryPostgres()
 
         project = {
-            "project_id": 1,
+            "project_id": 2,
             'title': "Teste2",
             'students': [1, 2],
-            'professors': [4],
+            'responsibles': [5],
         }
 
         repo.update_project(project)
 
-        assert Project.objects.get(project_id=1).students.count() == 2
-        assert Project.objects.get(project_id=1).title == 'Teste2'
-        assert Project.objects.get(project_id=1).professors.count() == 1
+        assert Project.objects.get(project_id=2).students.count() == 2
+        assert Project.objects.get(project_id=2).title == 'Teste2'
+        assert Project.objects.get(project_id=2).responsibles.count() == 1
 
     def test_get_project(self):
         repo = ProjectRepositoryPostgres()
@@ -90,7 +92,8 @@ class TestProjectRepositoryPostgres(TransactionTestCase):
             'stand_number': "1",
             'is_entrepreneurship': False,
             'students': [1, 2, 3],
-            'professors': [4, 5],
+            'advisors': [4],
+            'responsibles': [5]
         }
 
         count = Project.objects.count()
@@ -108,24 +111,24 @@ class TestProjectRepositoryPostgres(TransactionTestCase):
         
         projects2 = repo.get_projects_by_role(user_id=2)
         assert len(projects2) == 1
-        assert type(projects1) == list
-        assert type(projects1[0]) == dict
+        assert type(projects2) == list
+        assert type(projects2[0]) == dict
 
         projects3 = repo.get_projects_by_role(user_id=3)
         assert len(projects3) == 1
-        assert type(projects1) == list
-        assert type(projects1[0]) == dict
+        assert type(projects3) == list
+        assert type(projects3[0]) == dict
 
         projects4 = repo.get_projects_by_role(user_id=4)
         assert len(projects4) == 3
-        assert type(projects1) == list
-        assert type(projects1[0]) == dict
+        assert type(projects4) == list
+        assert type(projects4[0]) == dict
 
         projects5 = repo.get_projects_by_role(user_id=5)
         assert len(projects5) == 2
-        assert type(projects1) == list
-        assert type(projects1[0]) == dict
+        assert type(projects5) == list
+        assert type(projects5[0]) == dict
 
         projects6 = repo.get_projects_by_role(user_id=6)
         assert len(projects6) == 0
-        assert type(projects1) == list
+        assert type(projects6) == list

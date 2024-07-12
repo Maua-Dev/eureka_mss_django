@@ -4,7 +4,7 @@ from app.helpers.http.http_codes import InternalServerError, OK
 from app.repos.user.user_repository_interface import IUserRepository
 
 
-class GetAllStudentsController(IController):
+class GetAllProfessorsController(IController):
     def __init__(self, repo: IUserRepository):
         super().__init__(repo)
         self.repo = repo
@@ -17,12 +17,12 @@ class GetAllStudentsController(IController):
             if len(response_data) == 0:
                 return OK(
                     body=[],
-                    message="No students were found"
+                    message="No professors were found"
                 )
-            else:            
+            else:
                 return OK(
-                    body=[student.to_dict() for student in response_data] if type(response_data[0]) != dict else response_data, # TODO: Refactor this (entity? repo use to dict? idk)
-                    message="All students were successfully retrieved"
+                    body=[professor.to_dict() for professor in response_data] if type(response_data[0]) != dict else response_data, # TODO: Refactor this (entity? repo use to dict? idk)
+                    message="All professors were successfully retrieved"
                 )
 
         except Exception as err:
@@ -34,4 +34,4 @@ class GetAllStudentsController(IController):
         pass
 
     def business_logic(self, request: DjangoHttpRequest):
-        return self.repo.get_all_students()
+        return self.repo.get_all_professors()

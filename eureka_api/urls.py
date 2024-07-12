@@ -37,5 +37,6 @@ urlpatterns = [
     
     # UserViews
     path('get_all_students', UserViews.get_all_students, name='get_all_students'),
+    path('get_all_professors', UserViews.get_all_professors, name='get_all_professors')
     
 ]

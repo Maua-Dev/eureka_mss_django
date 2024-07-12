@@ -15,3 +15,6 @@ class UserRepositoryPostgres(IUserRepository):
         
     def get_all_students(self):
         return [student.to_dict() for student in User.objects.filter(role="STUDENT")]
+    
+    def get_all_professors(self):
+        return [professor.to_dict() for professor in User.objects.filter(role="PROFESSOR")]

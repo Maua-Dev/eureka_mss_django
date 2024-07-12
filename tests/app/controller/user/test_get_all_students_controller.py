@@ -17,4 +17,4 @@ class TestGetAllStudentsController(TestCase):
 
         assert response.status_code == 200
         assert response.message == "All students were successfully retrieved"
-        assert len(response.body) == 4
+        assert len(response.body) == 5

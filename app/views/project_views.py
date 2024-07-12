@@ -23,7 +23,7 @@ class ProjectViews:
 
     @staticmethod
     def update_project(request):
-        controller = UpdateProjectController(project_repo)
+        controller = UpdateProjectController(project_repo=project_repo, user_repo=user_repo)
         http_request = DjangoHttpRequest(request)
         response = controller(http_request)
         http_response = DjangoHttpResponse(body=response.body, status_code=response.status_code,

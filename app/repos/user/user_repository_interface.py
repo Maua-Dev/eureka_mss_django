@@ -18,3 +18,10 @@ class IUserRepository(RepoInterface):
         Return all students.
         """
         pass
+    
+    @abstractmethod
+    def get_all_professors(self):
+        """
+        Return all professors.
+        """
+        pass

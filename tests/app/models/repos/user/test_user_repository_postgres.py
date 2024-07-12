@@ -12,8 +12,8 @@ class TestUserRepositoryPostgres(TransactionTestCase):
     def setUp(self):
         User.objects.create(user_id=0, name="Vitor Soller", role="STUDENT")
         User.objects.create(user_id=1, name="Brancas", role="STUDENT")
-        User.objects.create(user_id=2, name="Hector Guerrini", role="ADVISOR")
-        User.objects.create(user_id=3, name="Bruno Vilas", role="ADVISOR")
+        User.objects.create(user_id=2, name="Hector Guerrini", role="PROFESSOR")
+        User.objects.create(user_id=3, name="Bruno Vilas", role="PROFESSOR")
         User.objects.create(user_id=4, name="Luigi Televisão", role="STUDENT")
 
     def tearDown(self):
@@ -37,3 +37,11 @@ class TestUserRepositoryPostgres(TransactionTestCase):
         assert students[0]["user_id"] == 0
         assert students[1]["user_id"] == 1
         assert students[2]["user_id"] == 4
+        
+    def test_get_all_professors(self):
+        repo = UserRepositoryPostgres()
+        professors = repo.get_all_professors()
+        assert len(professors) == 2
+        assert professors[0]["user_id"] == 2
+        assert professors[1]["user_id"] == 3
+        

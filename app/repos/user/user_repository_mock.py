@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from app.enums.user_role_enum import USER_ROLE
+from app.enums.task_responsible_enum import TASK_RESPONSIBLE
 from app.repos.user.user_repository_interface import IUserRepository
 
 
@@ -31,13 +31,13 @@ class UserRepositoryMock(IUserRepository):
                 "user_id": 4,
                 "name": "CARLOS EDUARDO DANTAS DE MENEZES",
                 "email": "carlos.menezes@maua.br",
-                "role": "ADVISOR"
+                "role": "PROFESSOR" # advisor
             },
             {
                 "user_id": 5,
                 "name": "ANA PAULA GONCALVES SERRA",
                 "email": "ana.serra@maua.br",
-                "role": "RESPONSIBLE"
+                "role": "PROFESSOR" # responsible
             },
             {
                 "user_id": 6,
@@ -49,8 +49,27 @@ class UserRepositoryMock(IUserRepository):
                 "user_id": 7,
                 "name": "JOSE MARIA",
                 "email": "jose.maria@sbt.br",
-                "role": "ADVISOR"
+                "role": "PROFESSOR" # responsible	
+            },
+            {
+                "user_id": 8,
+                "name": "VANDERLEI CUNHA PARRO",
+                "email": "vcp@maua.br",
+                "role": "PROFESSOR" # advisor
+            },
+            {
+                "user_id": 9,
+                "name": "RODRIGO MORALES MILES",
+                "email": "rodrigo.miles@maua.br",
+                "role": "STUDENT" # student without project
+            },
+            {
+                "user_id": 10,
+                "name": "FERNANDO ANDRADE RODRIGUES",
+                "email": "fernando.rodrigues@maua.br",
+                "role": "ADMIN"
             }
+            
         ]
 
     def get_user(self, user_id: int):
@@ -61,3 +80,6 @@ class UserRepositoryMock(IUserRepository):
     
     def get_all_students(self):
         return [student for student in self.users if student["role"] == "STUDENT"]
+    
+    def get_all_professors(self):
+        return [professor for professor in self.users if professor["role"] == "PROFESSOR"]

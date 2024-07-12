@@ -15,7 +15,8 @@ class TestProjectRepositoryMock(TestCase):
             'shift': "DIRUNO",
             'stand_number': "1",
             'is_entrepreneurship': False,
-            'professors': [1, 2, 3],
+            'advisors': [4],
+            'responsibles': [7],
             'students': [4, 5],
         }
 
@@ -56,5 +57,8 @@ class TestProjectRepositoryMock(TestCase):
         
         projects4 = repo.get_projects_by_role(user_id=100)
         assert projects4 == []
+        
+        projects5 = repo.get_projects_by_role(user_id=7)
+        assert projects5 == [repo.projects[1]] 
         
         

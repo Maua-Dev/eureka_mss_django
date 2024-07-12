@@ -13,7 +13,8 @@ class ProjectRepositoryMock(IProjectRepository):
                     'shift': "DIRUNO",
                     'stand_number': "1",
                     'is_entrepreneurship': False,
-                    'professors': [4, 5],
+                    'advisors': [4],
+                    'responsibles': [5],
                     'students': [1, 2],
                 },
                 {
@@ -24,7 +25,8 @@ class ProjectRepositoryMock(IProjectRepository):
                     'shift': "NOTURNO",
                     'stand_number': "2",
                     'is_entrepreneurship': False,
-                    'professors': [4, 7],
+                    'advisors': [4, 8],
+                    'responsibles': [7],
                     'students': [3],
                 },
                 {
@@ -35,7 +37,8 @@ class ProjectRepositoryMock(IProjectRepository):
                     'shift': "DIURNO",
                     'stand_number': "1",
                     'is_entrepreneurship': False,
-                    'professors': [4, 5],
+                    'advisors': [4, 8],
+                    'responsibles': [5],
                     'students': [6],
                 }
             ]
@@ -49,6 +52,8 @@ class ProjectRepositoryMock(IProjectRepository):
         def create_project(self, project):
             project['is_entrepreneurship'] = project.get("is_entrepreneurship", False)
             project['students'] = project.get("students", [])
+            project['advisors'] = project.get("advisors", [])
+            project['responsibles'] = project.get("responsibles", [])
             project["project_id"] = len(self.projects) + 1
             
             self.projects.append(project)
@@ -66,7 +71,7 @@ class ProjectRepositoryMock(IProjectRepository):
         def get_projects_by_role(self, user_id: int):
             projects = []
             for project in self.projects:
-                if user_id in project['professors'] or user_id in project['students']:
+                if user_id in project['advisors'] or user_id in project['students'] or user_id in project['responsibles']:
                     projects.append(project)
             return projects
             

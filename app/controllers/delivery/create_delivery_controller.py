@@ -1,7 +1,7 @@
 import json
 
 from app.controllers.controller_interface import IController
-from app.helpers.errors.common_errors import AdvisorForbiddenAction, ObjectNotFound, MissingParameters, ProjectNotFound, RequestNotFound, RoleForbiddenAction, StudentForbiddenAction, StudentNotInProject, TaskNotFound, TeacherNotInProject, UserNotFound
+from app.helpers.errors.common_errors import AdvisorForbiddenAction, ObjectNotFound, MissingParameters, ProjectNotFound, RequestNotFound, ResponsibleForbiddenAction, RoleForbiddenAction, StudentForbiddenAction, StudentNotInProject, TaskNotFound, TeacherNotInProject, UserNotFound
 from app.helpers.http.http_codes import Created, BadRequest, InternalServerError, NotFound, Forbidden
 from app.helpers.http.http_models import HttpRequestModel
 from app.repos.delivery.delivery_repository_interface import IDeliveryRepository
@@ -89,19 +89,32 @@ class CreateDeliveryController(IController):
         except:
             raise UserNotFound()
         
-        if task['responsible'] == 'ADVISOR' and user['role'] not in ['RESPONSIBLE', "ADVISOR"]:
-            raise StudentForbiddenAction()
-        if task['responsible'] == 'RESPONSIBLE' and user['role'] != 'RESPONSIBLE':
-            if user['role'] == 'ADVISOR':
-                raise AdvisorForbiddenAction()
-            raise StudentForbiddenAction()
+        user_role = user['role']
+        if user_role == "PROFESSOR":
+            advisors_id = project['advisors']
+            responsibles_id = project['responsibles']
+            if user['user_id'] not in advisors_id and user['user_id'] not in responsibles_id:
+                raise TeacherNotInProject()
+
+            if user['user_id'] in advisors_id:
+                user_role = "ADVISOR"
+            
+            if user['user_id'] in responsibles_id:
+                user_role = "RESPONSIBLE"
         
-        students_id = project['students']
-        if user['role'] == 'STUDENT' and user['user_id'] not in students_id:
-            raise StudentNotInProject()
-        professors_id = project['professors']
-        if user['role'] == 'PROFESSOR' and user['user_id'] not in professors_id:
-            raise TeacherNotInProject()
+        if user_role == "STUDENT":
+            students_id = project['students']
+            if user['user_id'] not in students_id:
+                raise StudentNotInProject()
+        
+        if user_role == 'STUDENT' and task['responsible'] in ['ADVISOR', 'RESPONSIBLE', 'ADMIN']:
+            raise StudentForbiddenAction()
+    
+        if user_role == 'ADVISOR' and task['responsible'] in ['RESPONSIBLE', 'ADMIN']:
+            raise AdvisorForbiddenAction()
+        
+        if user_role == 'RESPONSIBLE' and task['responsible'] == 'ADMIN':
+            raise ResponsibleForbiddenAction()
         
         response = self.delivery_repo.create_delivery(
             delivery=delivery, 

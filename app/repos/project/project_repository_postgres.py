@@ -21,12 +21,19 @@ class ProjectRepositoryPostgres(IProjectRepository):
             if len(student_projects) > 0:
                 return [project.to_dict() for project in student_projects]    
 
-            professor_projects = []
+            advisors_project = []
             try:
-                professor_projects = Project.objects.filter(professors__user_id=user_id)
+                advisors_project = Project.objects.filter(advisors__user_id=user_id)
             except: pass
-            if len(professor_projects) > 0:
-                return [project.to_dict() for project in professor_projects]
+            if len(advisors_project) > 0:
+                return [project.to_dict() for project in advisors_project]
+            
+            responsibles_project = []
+            try:
+                responsibles_project = Project.objects.filter(responsibles__user_id=user_id)
+            except: pass
+            if len(responsibles_project) > 0:
+                return [project.to_dict() for project in responsibles_project]
             
             return []
                 
@@ -37,11 +44,16 @@ class ProjectRepositoryPostgres(IProjectRepository):
 
             to_update = project
 
-            if 'professors' in project:
-                professors = User.objects.filter(user_id__in=project['professors'])
-                project_to_update.professors.set(professors)
-                to_update.pop('professors')
 
+            if 'responsibles' in project:
+                responsibles = User.objects.filter(user_id__in=project['responsibles'])
+                project_to_update.responsibles.set(responsibles)
+                to_update.pop('responsibles')
+                
+            if 'advisors' in project:
+                advisors = User.objects.filter(user_id__in=project['advisors'])
+                project_to_update.professors.set(advisors)
+                to_update.pop('advisors')
 
             if 'students' in project:
                 students = User.objects.filter(user_id__in=project['students'])
@@ -56,8 +68,6 @@ class ProjectRepositoryPostgres(IProjectRepository):
             return project_to_update.to_dict()
 
         def create_project(self, project):
-            professors = User.objects.filter(user_id__in=project['professors'])
-
             project_created = Project.objects.create(
                 title=project['title'],
                 qualification=project['qualification'],
@@ -67,11 +77,19 @@ class ProjectRepositoryPostgres(IProjectRepository):
                 is_entrepreneurship=project['is_entrepreneurship']
             )
 
-            project_created.professors.set(professors)
+            if len(project.get('advisors', [])) + len(project.get('responsibles', [])) + len(project.get('students', [])) > 0:
+                if 'advisors' in project:
+                    advisors = User.objects.filter(user_id__in=project['advisors'])
+                    project_created.advisors.set(advisors)
+                    
+                if 'responsibles' in project:
+                    responsibles = User.objects.filter(user_id__in=project['responsibles'])
+                    project_created.responsibles.set(responsibles)
 
-            if 'students' in project:
-                students = User.objects.filter(user_id__in=project['students'])
-                project_created.students.set(students)
-                project_created.save()
+                if 'students' in project:
+                    students = User.objects.filter(user_id__in=project['students'])
+                    project_created.students.set(students)
 
+                project_created.save()  
+                
             return project_created.to_dict()

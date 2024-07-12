@@ -13,3 +13,10 @@ class TestUserView(TestCase):
         response = UserViews.get_all_students(request)
 
         assert response.status_code == 200
+        
+    def test_get_all_professors_view(self):
+        request = self.factory.get('/get_all_professors')
+
+        response = UserViews.get_all_professors(request)
+
+        assert response.status_code == 200
