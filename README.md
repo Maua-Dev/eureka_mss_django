@@ -49,6 +49,9 @@ Repository for the Eureka backend microservice, programmed in Python using the D
 
     STAGE = TEST
 
+### Run the application in the root folder 🏎️
+    
+    python manage.py runserver
 
 ## Contributors 💰🤝💰
 
