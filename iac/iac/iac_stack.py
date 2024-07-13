@@ -28,8 +28,8 @@ class IacStack(Stack):
             memory_limit_mib=1024,
             cpu=512,
             task_image_options={
-                "image": ecs.ContainerImage.from_registry(f"{ENVIRONMENT['REPOSITORY_NAME']}:lastest"),
+                "image": ecs.ContainerImage.from_registry(f"{ENVIRONMENT['REPOSITORY_NAME']}:latest"),
                 "container_port": 8000,
             },
-            public_load_balancer=True
+            public_load_balancer=True,
         )
