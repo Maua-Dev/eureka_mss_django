@@ -22,13 +22,15 @@ class IacStack(Stack):
 
         cluster = ecs.Cluster(self, "EurekaApiCluster", vpc=vpc)
 
+        repository = ecr.Repository.from_repository_name(self, "EurekaApiRepository", repository_name=ENVIRONMENT["REPOSITORY_NAME"])
+
         ecs_patterns.ApplicationLoadBalancedFargateService(
             self, "EurekaApiService",
             cluster=cluster,
             memory_limit_mib=1024,
             cpu=512,
             task_image_options={
-                "image": ecs.ContainerImage.from_registry(f"{ENVIRONMENT['REPOSITORY_NAME']}:latest"),
+                "image": ecs.ContainerImage.from_ecr_repository(repository, tag="latest"),
                 "container_port": 8000,
             },
             public_load_balancer=True,
