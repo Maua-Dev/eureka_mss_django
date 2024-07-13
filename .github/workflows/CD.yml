@@ -28,7 +28,7 @@ jobs:
       - name: Setting Stack and Repository name
         run: |
           echo "STACK_NAME=EurekaApi${{ github.ref_name }}" >> $GITHUB_ENV
-          echo "REPOSITORY_NAME=eureka-api-repository${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "REPOSITORY_NAME=eureka-api-repository-${{ github.ref_name }}" >> $GITHUB_ENV
 
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -43,6 +43,7 @@ jobs:
 
       - name: Pushing Docker image to AWS ECR repository
         run: |
+          aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }} --image-scanning-configuration scanOnPush=true
           aws ecr get-login-password --region us-east-1 | docker login --username AWS  --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
           docker build -t ${{ env.REPOSITORY_NAME }} .
           docker tag ${{ env.REPOSITORY_NAME }}:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
