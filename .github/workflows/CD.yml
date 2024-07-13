@@ -43,7 +43,9 @@ jobs:
 
       - name: Pushing Docker image to AWS ECR repository
         run: |
+          if ! aws ecr describe-repositories --repository-names ${{ env.REPOSITORY_NAME }} >/dev/null 2>&1; then
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }} --image-scanning-configuration scanOnPush=true
+          fi
           aws ecr get-login-password --region us-east-1 | docker login --username AWS  --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
           docker build -t ${{ env.REPOSITORY_NAME }} .
           docker tag ${{ env.REPOSITORY_NAME }}:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
