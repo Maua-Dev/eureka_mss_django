@@ -1,4 +1,4 @@
-name: Django CD  Test
+name: EurekaApi CD
 
 on:
   push:
@@ -8,12 +8,52 @@ on:
       - homolog
 
 jobs:
-  DjangoTest:
+  EurekaApiCD:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Setup Python 3.11
+
+      - name: Setup Python 3.10
         uses: actions/setup-python@v3
         with:
-          python-version: '3.11'
+          python-version: '3.10'
+
+      - Setting Stack and Repository name
+        run: |
+          echo "STACK_NAME=EurekaApi${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "REPOSITORY_NAME=eureka-api-repository${{ github.ref_name }}" >> $GITHUB_ENV
+
+
+      - name: Setup AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v2
+          with:
+            aws-region: ${{ vars.AWS_REGION }}
+            role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GithubActionsRole
+            role-session-name: github-action
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          npm install -g aws-cdk
+          cd iac
+          pip install -r requirements.txt
+
+      - name: Pushing Docker image to AWS ECR repository
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS  --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+          docker build -t ${{ env.REPOSITORY_NAME }} .
+          docker tag ${{ env.REPOSITORY_NAME }}:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
+
+      - name: Deploying CDK
+        run: |
+          cd iac
+          cdk synth
+          cdk deploy --require-approval never
+        env:
+          AWS_REGION: us-east-1
+          STACK_NAME: ${{ env.STACK_NAME }}
+          STAGE: ${{ github.ref_name }}
+          REPOSITORY_NAME: ${{ env.REPOSITORY_NAME }}
+
