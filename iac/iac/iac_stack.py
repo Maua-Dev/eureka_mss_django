@@ -18,17 +18,18 @@ class IacStack(Stack):
             "REPOSITORY_NAME": os.environ.get("REPOSITORY_NAME")
         }
 
-        vpc = ec2.Vpc(self, "EurekaApiVPC", max_azs=3)
+        vpc = ec2.Vpc(self, "EurekaApiVPC", max_azs=2)
 
         cluster = ecs.Cluster(self, "EurekaApiCluster", vpc=vpc)
 
         ecs_patterns.ApplicationLoadBalancedFargateService(
             self, "EurekaApiService",
             cluster=cluster,
-            memory_limit_mib=512,
-            cpu=256,
+            memory_limit_mib=1024,
+            cpu=512,
             task_image_options={
-                "image": ecs.ContainerImage.from_registry(ENVIRONMENT["REPOSITORY_NAME"])
+                "image": ecs.ContainerImage.from_registry(ENVIRONMENT["REPOSITORY_NAME"]),
+                "container_port": 8000,
             },
             public_load_balancer=True
         )
