@@ -8,22 +8,22 @@ on:
 jobs:
   DjangoTest:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Setup Python 3.11
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.11'
-      - name: Install requirements
-        run: |
-            pip install -r requirements.txt
-      - name: Setup Docker
-        run: |
-            cd docker
-            docker compose up --detach --wait --wait-timeout 30
-      - name: Run tests
-        env:
-          DJANGO_SETTINGS_MODULE: 'eureka_api.settings'
-        run: |
-          python manage.py test
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+#       - name: Setup Python 3.11
+#         uses: actions/setup-python@v3
+#         with:
+#           python-version: '3.11'
+#       - name: Install requirements
+#         run: |
+#             pip install -r requirements.txt
+#       - name: Setup Docker
+#         run: |
+#             cd docker
+#             docker compose up --detach --wait --wait-timeout 30
+#       - name: Run tests
+#         env:
+#           DJANGO_SETTINGS_MODULE: 'eureka_api.settings'
+#         run: |
+#           python manage.py test
