@@ -34,4 +34,5 @@ class IacStack(Stack):
                 "container_port": 8000,
             },
             public_load_balancer=True,
+            assign_public_ip=True
         )
