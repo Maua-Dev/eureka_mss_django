@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
+import dotenv
 from pathlib import Path
+
+# Load environment variables
+dotenv.load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,16 +81,22 @@ WSGI_APPLICATION = 'eureka_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'postgres',
-#         'USER': 'postgres',
-#         'PASSWORD': 'Postgres2023!',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
-#     }
-# }
+NAME = os.getenv('PG_DB')
+USER = os.getenv('PG_USER')
+PASSWORD = os.getenv('PG_PASSWORD')
+HOST = os.getenv('PG_HOST')
+PORT = os.getenv('PG_PORT')
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': NAME,
+        'USER': USER,
+        'PASSWORD': PASSWORD,
+        'HOST': HOST,
+        'PORT': PORT,
+    }
+}
 
 
 # Password validation

@@ -1,8 +1,0 @@
-services:
-  postgres:
-    image: postgres
-    environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "Postgres2023!"
-    ports:
-      - "8502:5432"
