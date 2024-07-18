@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  database:
+    image: 'postgres:latest'
+    restart: always
+    ports:
+      - 15432:5432
+    environment:
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=dev123-
+      - POSTGRES_DB=eureka_db
+    networks:
+      - postgres-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: 'dpage/pgadmin4'
+    restart: always
+    ports:
+      - 16543:80
+    depends_on:
+      - database
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=dev@maua.br
+      - PGADMIN_DEFAULT_PASSWORD=123
+    networks:
+      - postgres-network
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+networks:
+  postgres-network:
+    driver: bridge
+
+volumes:
+  pgdata:
+  pgadmin-data:
