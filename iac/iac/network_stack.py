@@ -14,12 +14,12 @@ class NetworkStack(Construct):
         # Our network in the cloud
         self.vpc = ec2.Vpc(
             self,
-            "VPC",
+            "EurekaVPC",
             max_azs=2,  # default is all AZs in region
             enable_dns_hostnames=True,
             enable_dns_support=True,
         )
-        self.ecs_cluster = ecs.Cluster(self, f"ECSCluster", vpc=self.vpc)
+        self.ecs_cluster = ecs.Cluster(self, f"EurekaECSCluster", vpc=self.vpc)
         # Add VPC endpoints to keep the traffic inside AWS
 
 
