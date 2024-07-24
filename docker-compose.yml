@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+  database:
+    image: 'postgres:latest'
+    restart: always
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    networks:
+      - postgres-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: 'dpage/pgadmin4'
+    restart: always
+    ports:
+      - 16543:80
+    depends_on:
+      - database
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=dev@maua.br
+      - PGADMIN_DEFAULT_PASSWORD=123
+    networks:
+      - postgres-network
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: database
+      DB_PORT: ${DB_PORT}
+    volumes:
+      - .:/app
+    depends_on:
+      - database
+    networks:
+      - postgres-network
+      
+networks:
+  postgres-network:
+    driver: bridge
+
+volumes:
+  pgdata:
+  pgadmin-data:
