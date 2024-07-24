@@ -20,7 +20,7 @@ class RDSStack(Construct):
             self,
             "EurekaRDS",
             engine=rds.DatabaseInstanceEngine.postgres(
-                version=rds.PostgresEngineVersion.VER_15_2
+                version=rds.PostgresEngineVersion.VER_15_4
             ),
             instance_type=ec2.InstanceType.of(
                 ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.MICRO
