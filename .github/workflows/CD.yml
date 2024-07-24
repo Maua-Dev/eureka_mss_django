@@ -47,26 +47,31 @@ jobs:
             echo AWS_REGION=${{ vars.AWS_REGION }} >> $GITHUB_ENV
             echo AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }} >> $GITHUB_ENV
             echo GITHUB_REF_NAME=${{ github.ref_name }} >> $GITHUB_ENV
-            
+            echo "REPOSITORY_NAME=eureka-2024-repository-${{ env.GITHUB_REF_NAME }}" >> $GITHUB_ENV
 
             echo ${{ env.AWS_REGION }}
             echo ${{ env.AWS_ACCOUNT_ID }}
             echo ${{ env.STACK_NAME }}
             echo ${{ env.GITHUB_REF_NAME }}
+            echo ${{ env.REPOSITORY_NAME }}
 
-        - name: Deploy with CDK
+        # - name: Pushing Docker image to AWS ECR repository
+        #   run: |
+        #     if ! aws ecr describe-repositories --repository-names ${{ env.REPOSITORY_NAME }} >/dev/null 2>&1; then
+        #     aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }} --image-scanning-configuration scanOnPush=true
+        #     fi
+        #     aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS  --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+        #     docker build -t ${{ env.REPOSITORY_NAME }} .
+        #     docker tag ${{ env.REPOSITORY_NAME }}:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
+        #     docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
+
+        - name: Deploying CDK
           run: |
             cd iac
             cdk synth
-            cdk deploy --require-approval never 
-
-#        - name: Get ECR URI
-#          run: |
-#            ECR_REPOSITORY_URI=$(aws cloudformation --region ${{vars.AWS_REGION}} describe-stacks --stack-name ${{env.STACK_NAME}} --query "Stacks[0].Outputs[?OutputKey=='EcrRepositoryArn'].OutputValue" --output text)
-#            echo "ECR_REPOSITORY_URI=${ECR_REPOSITORY_URI}" >> $GITHUB_ENV
-#
-#        - name: Build and Push Docker Image
-#          run: |
-#            aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin 264055331071.dkr.ecr.sa-east-1.amazonaws.com
-#            docker build -t ${{env.ECR_REPOSITORY_URI}} .
-#            docker push ${{env.ECR_REPOSITORY_URI}}
+            cdk deploy --require-approval never
+          env:
+            AWS_REGION: ${{ env.AWS_REGION }}
+            STACK_NAME: ${{ env.STACK_NAME }}
+            STAGE: ${{ env.GITHUB_REF_NAME }}
+            REPOSITORY_NAME: ${{ env.REPOSITORY_NAME }}
