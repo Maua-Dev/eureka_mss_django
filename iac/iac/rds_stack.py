@@ -23,7 +23,7 @@ class RDSStack(Construct):
                 version=rds.PostgresEngineVersion.VER_15_4
             ),
             instance_type=ec2.InstanceType.of(
-                ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.MICRO
+                ec2.InstanceClass.T3, ec2.InstanceSize.MICRO
             ),
             vpc=vpc,
             credentials=rds.Credentials.from_generated_secret("postgres"),
