@@ -26,6 +26,7 @@ class FargateStack(Construct):
         task_desired_count: int = 1,
         task_min_scaling_capacity: int = 2,
         task_max_scaling_capacity: int = 4,
+        repository_name: str = None
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id)
@@ -37,7 +38,9 @@ class FargateStack(Construct):
         self.task_min_scaling_capacity = task_min_scaling_capacity
         self.task_max_scaling_capacity = task_max_scaling_capacity
 
-        self.container_name = f"django_app"
+        self.container_name = f"eureka_django_app"
+
+        repository = ecr.Repository.from_repository_name(self, "EurekaDjangoAppRepo", repository_name=repository_name)
 
         # Create the load balancer, ECS service and fargate task for teh Django App
         self.alb_fargate_service = ecs_patterns.ApplicationLoadBalancedFargateService(
@@ -50,9 +53,7 @@ class FargateStack(Construct):
             memory_limit_mib=self.task_memory_mib,  # Default is 512
             desired_count=self.task_desired_count,  # Default is 1
             task_image_options=ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
-                image=ecs.ContainerImage.from_asset(
-                    directory="../", file="Dockerfile"
-                ),
+                image=ecs.ContainerImage.from_ecr_repository(repository, tag="latest"),
                 container_name=self.container_name,
                 container_port=8000,
                 environment={
@@ -63,10 +64,10 @@ class FargateStack(Construct):
                     "DB_PASSWORD": rds_instance.secret.secret_value_from_json("password").unsafe_unwrap(),
                     "DB_HOST": rds_instance.db_instance_endpoint_address,
                     "DB_PORT": rds_instance.db_instance_endpoint_port,
-
                 },
             ),
             public_load_balancer=True,
+            assign_public_ip=True,
         )
         # Set the health checks settings
         self.alb_fargate_service.target_group.configure_health_check(
