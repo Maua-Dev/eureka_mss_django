@@ -20,7 +20,7 @@ class RDSStack(Construct):
             self,
             "EurekaRDS",
             engine=rds.DatabaseInstanceEngine.postgres(
-                version=rds.PostgresEngineVersion.VER_12
+                version=rds.PostgresEngineVersion.VER_15_2
             ),
             instance_type=ec2.InstanceType.of(
                 ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.MICRO
@@ -29,7 +29,10 @@ class RDSStack(Construct):
             credentials=rds.Credentials.from_generated_secret("postgres"),
             removal_policy=RemovalPolicy.DESTROY,
             database_name="eureka_db",
-            publicly_accessible=True
+            publicly_accessible=True,
+            storage_type=rds.StorageType.GP3,
+            allocated_storage=20,
+            max_allocated_storage=100,
         )
 
 
