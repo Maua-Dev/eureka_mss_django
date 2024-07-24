@@ -1,11 +1,10 @@
 import os
 
 from aws_cdk import (
-    CfnOutput, aws_cognito,
+    CfnOutput,
     aws_rds as rds,
     RemovalPolicy,
     aws_ec2 as ec2,
-    aws_secretsmanager as secretsmanager
 
 
 )
@@ -34,6 +33,8 @@ class RDSStack(Construct):
             allocated_storage=20,
             max_allocated_storage=100,
         )
+
+        self.rds.connections.allow_default_port_from_any_ipv4()
 
 
 
