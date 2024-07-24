@@ -70,7 +70,7 @@ jobs:
             cdk synth
             cdk deploy --require-approval never
           env:
+            STAGE: ${{ env.GITHUB_REF_NAME }}
             AWS_REGION: ${{ env.AWS_REGION }}
             STACK_NAME: ${{ env.STACK_NAME }}
-            STAGE: ${{ env.GITHUB_REF_NAME }}
             REPOSITORY_NAME: ${{ env.REPOSITORY_NAME }}
