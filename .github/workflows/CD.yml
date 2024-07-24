@@ -55,15 +55,15 @@ jobs:
             echo ${{ env.GITHUB_REF_NAME }}
             echo ${{ env.REPOSITORY_NAME }}
 
-        # - name: Pushing Docker image to AWS ECR repository
-        #   run: |
-        #     if ! aws ecr describe-repositories --repository-names ${{ env.REPOSITORY_NAME }} >/dev/null 2>&1; then
-        #     aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }} --image-scanning-configuration scanOnPush=true
-        #     fi
-        #     aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS  --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-        #     docker build -t ${{ env.REPOSITORY_NAME }} .
-        #     docker tag ${{ env.REPOSITORY_NAME }}:latest ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
-        #     docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
+        - name: Pushing Docker image to AWS ECR repository
+          run: |
+            if ! aws ecr describe-repositories --repository-names ${{ env.REPOSITORY_NAME }} >/dev/null 2>&1; then
+            aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }} --image-scanning-configuration scanOnPush=true
+            fi
+            aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS  --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+            docker build -t ${{ env.REPOSITORY_NAME }} .
+            docker tag ${{ env.REPOSITORY_NAME }}:latest ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
+            docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
 
         - name: Deploying CDK
           run: |
