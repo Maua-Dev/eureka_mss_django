@@ -1,21 +1,14 @@
 import os
 from aws_cdk import (
-    Duration,
     Stack,
-    aws_lambda as _lambda,
-    CfnOutput,
-    aws_iam as iam,
-    SecretValue, aws_ecr, RemovalPolicy
+    RemovalPolicy
 )
 from constructs import Construct
-from aws_cdk.aws_cloudwatch import ComparisonOperator
-from aws_cdk.aws_sns import Topic
 
-from aws_cdk.aws_cloudwatch_actions import SnsAction
 
+from .rds_stack import RDSStack
 from .fargate_stack import FargateStack
 from .network_stack import NetworkStack
-from .rds_stack import RDSStack
 
 
 class IacStack(Stack):
@@ -31,7 +24,13 @@ class IacStack(Stack):
 
         self.network_stack = NetworkStack(self, "EurekaNetworkStack")
 
-        self.rds_stack = RDSStack(self, self.network_stack.vpc)
+        # self.rds_stack = RDSStack(self, self.network_stack.vpc)
 
-        self.fargate_stack = FargateStack(self, "EurekaFargateStack", rds_instance=self.rds_stack.rds, vpc=self.network_stack.vpc,
-                                          ecs_cluster=self.network_stack.ecs_cluster, repository_name=self.respository_name)
+        self.fargate_stack = FargateStack(
+            self,
+            "EurekaFargateStack",
+            # rds_instance=self.rds_stack.rds, 
+            vpc=self.network_stack.vpc,
+            ecs_cluster=self.network_stack.ecs_cluster, 
+            repository_name=self.respository_name
+        )

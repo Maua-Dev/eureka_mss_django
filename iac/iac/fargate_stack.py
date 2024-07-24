@@ -20,13 +20,13 @@ class FargateStack(Construct):
         construct_id: str,
         vpc: ec2.Vpc,
         ecs_cluster: ecs.Cluster,
-        rds_instance: rds.DatabaseInstance,
+        # rds_instance: rds.DatabaseInstance,
         task_cpu: int = 256,
         task_memory_mib: int = 1024,
         task_desired_count: int = 1,
         task_min_scaling_capacity: int = 2,
         task_max_scaling_capacity: int = 4,
-        repository_name: str = None
+        repository_name: str = None,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id)
@@ -59,11 +59,11 @@ class FargateStack(Construct):
                 environment={
                     "STAGE": "DEV",
                     "DJANGO_SETTINGS_MODULE": "eureka_api.settings",
-                    "DB_NAME": rds_instance.instance_identifier,
-                    "DB_USER": rds_instance.secret.secret_value_from_json("username").unsafe_unwrap(),
-                    "DB_PASSWORD": rds_instance.secret.secret_value_from_json("password").unsafe_unwrap(),
-                    "DB_HOST": rds_instance.db_instance_endpoint_address,
-                    "DB_PORT": rds_instance.db_instance_endpoint_port,
+                    # "DB_NAME": rds_instance.instance_identifier,
+                    # "DB_USER": rds_instance.secret.secret_value_from_json("username").unsafe_unwrap(),
+                    # "DB_PASSWORD": rds_instance.secret.secret_value_from_json("password").unsafe_unwrap(),
+                    # "DB_HOST": rds_instance.db_instance_endpoint_address,
+                    # "DB_PORT": rds_instance.db_instance_endpoint_port,
                 },
             ),
             public_load_balancer=True,
