@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - dev
+      - deploy-eureka
 
 jobs:
   DeployToAWS:
