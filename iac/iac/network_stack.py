@@ -1,7 +1,5 @@
 from aws_cdk import (
-    Stack,
     aws_ec2 as ec2,
-    aws_ssm as ssm,
     aws_ecs as ecs,
 )
 from constructs import Construct
