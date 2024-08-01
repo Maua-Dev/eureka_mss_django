@@ -45,7 +45,7 @@ Repository for the Eureka backend microservice, programmed in Python using the D
 
 ### To run local set .env file according the .env.example file 🤗
 
-    cp .env.exemple .env 
+    cp .env.example .env 
 
 ### Populate DB 
 ### Install DBeaver (recommended)
