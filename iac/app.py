@@ -15,7 +15,6 @@ app = cdk.App()
 aws_region = os.environ.get("AWS_REGION")
 aws_account_id = os.environ.get("AWS_ACCOUNT_ID")
 stack_name = os.environ.get("STACK_NAME")
-project_name = os.environ.get("PROJECT_NAME")
 
 github_ref_name = os.environ.get("STAGE")
 
