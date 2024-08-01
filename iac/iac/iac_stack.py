@@ -16,7 +16,7 @@ class IacStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        self.STAGE = os.environ.get("STAGE")
+        self.STAGE = os.environ.get("STAGE").upper()
 
         DB_NAME = "eureka_db"
 
