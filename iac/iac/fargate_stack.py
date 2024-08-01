@@ -1,14 +1,10 @@
 from aws_cdk import (
     Stack,
     aws_ec2 as ec2,
-    aws_sqs as sqs,
-    aws_ecr as ecr,
     aws_ecs as ecs,
     aws_ecs_patterns as ecs_patterns,
-    aws_certificatemanager as acm,
     aws_rds as rds,
     aws_elasticloadbalancingv2 as elbv2,
-    aws_ssm as ssm,
 )
 from constructs import Construct
 
@@ -26,6 +22,7 @@ class FargateStack(Construct):
         task_desired_count: int = 1,
         task_min_scaling_capacity: int = 2,
         task_max_scaling_capacity: int = 4,
+        database_name: str = None,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id)
@@ -59,7 +56,7 @@ class FargateStack(Construct):
                 environment={
                     "STAGE": "DEV",
                     "DJANGO_SETTINGS_MODULE": "eureka_api.settings",
-                    "DB_NAME": "eureka_db",
+                    "DB_NAME": "database_name",
                     "DB_USER": rds_instance.secret.secret_value_from_json("username").unsafe_unwrap(),
                     "DB_PASSWORD": rds_instance.secret.secret_value_from_json("password").unsafe_unwrap(),
                     "DB_HOST": rds_instance.db_instance_endpoint_address,

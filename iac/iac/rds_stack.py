@@ -12,7 +12,7 @@ from constructs import Construct
 
 
 class RDSStack(Construct):
-    def __init__(self, scope: Construct, vpc: ec2.Vpc) -> None:
+    def __init__(self, scope: Construct, vpc: ec2.Vpc, database_name: str) -> None:
         super().__init__(scope, "EurekaRDSStack")
 
         self.rds = rds.DatabaseInstance(
@@ -27,7 +27,7 @@ class RDSStack(Construct):
             vpc=vpc,
             credentials=rds.Credentials.from_generated_secret("postgres"),
             removal_policy=RemovalPolicy.DESTROY,
-            database_name="eureka_db",
+            database_name=database_name,
             publicly_accessible=True,
             storage_type=rds.StorageType.GP3,
             allocated_storage=20,

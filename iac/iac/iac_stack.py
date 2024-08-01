@@ -17,20 +17,18 @@ class IacStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         self.STAGE = os.environ.get("STAGE")
-        self.project_name = os.environ.get("PROJECT_NAME")
-        self.respository_name = os.environ.get("REPOSITORY_NAME")
 
-        REMOVAL_POLICY = RemovalPolicy.RETAIN if 'prod' in self.STAGE else RemovalPolicy.DESTROY
+        DB_NAME = "eureka_db"
 
         self.network_stack = NetworkStack(self, "EurekaNetworkStack")
 
-        self.rds_stack = RDSStack(self, self.network_stack.vpc)
+        self.rds_stack = RDSStack(self, self.network_stack.vpc, DB_NAME)
 
         self.fargate_stack = FargateStack(
             self,
             "EurekaFargateStack",
             rds_instance=self.rds_stack.rds, 
             vpc=self.network_stack.vpc,
-            ecs_cluster=self.network_stack.ecs_cluster, 
-            repository_name=self.respository_name
+            ecs_cluster=self.network_stack.ecs_cluster,
+            database_name=DB_NAME
         )
