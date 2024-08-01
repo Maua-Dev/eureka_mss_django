@@ -66,7 +66,3 @@ class FargateStack(Construct):
             public_load_balancer=True,
             assign_public_ip=True,
         )
-        # Set the health checks settings
-        self.alb_fargate_service.target_group.configure_health_check(
-            path="/status", healthy_threshold_count=3, unhealthy_threshold_count=2
-        )
