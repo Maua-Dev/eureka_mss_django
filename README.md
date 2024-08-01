@@ -51,7 +51,7 @@ Repository for the Eureka backend microservice, programmed in Python using the D
 ### Install DBeaver (recommended)
 ### Create a connection and select PostgressSQL as your DB  
 ### Put host as localhost, port as 5432, and the same user and password that it is in your .env file.
-### Run the querrys that are in the populate_db directory
+### Run the querrys that are in the populate_database directory
 
 ## Contributors 💰🤝💰
 
