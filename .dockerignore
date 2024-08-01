@@ -1,0 +1,9 @@
+iac
+.github
+.idea
+.vscode
+docker
+pytest.ini
+README.md
+.gitignore
+tests

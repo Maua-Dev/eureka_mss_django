@@ -17,6 +17,7 @@ Including another URLconf
 from django.urls import path
 
 from app.views.delivery_views import DeliveryViews
+from app.views.status import StatusViews
 from app.views.task_views import TaskViews
 from app.views.project_views import ProjectViews
 from app.views.user_views import UserViews

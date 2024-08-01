@@ -1,66 +1,67 @@
 name: EurekaApi CD
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - prod
       - dev
       - homolog
+      - prod
 
 jobs:
-  EurekaApiCD:
+  DeployToAWS:
     environment: 
-      name: ${{ github.ref_name }}
+      name: dev
     runs-on: ubuntu-latest
-    permissions: 
-      contents: read
+    permissions:
       id-token: write
+      contents: read
 
     steps:
-      - name: Comment
-        run: echo "Commented for now"
-      # - uses: actions/checkout@v2
-      # - name: Setup AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@v2
-      #   with:
-      #       aws-region: us-east-1
-      #       role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GithubActionsRole
-      #       role-session-name: github-action
+        - uses: actions/checkout@v3
+        - name: Setup AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v2
+          with:
+            aws-region: sa-east-1
+            role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GithubActionsRole
+            role-session-name: github-action
 
-      # - name: Setting Stack and Repository name
-      #   run: |
-      #     echo "STACK_NAME=EurekaApi${{ github.ref_name }}" >> $GITHUB_ENV
-      #     echo "REPOSITORY_NAME=eureka-api-repository-${{ github.ref_name }}" >> $GITHUB_ENV
+        - name: Setting stage and stack name
+          run: |
+              STAGE=dev 
+              PROJECT_NAME=Eureka2024
+              echo "PROJECT_NAME=${PROJECT_NAME}" >> $GITHUB_ENV
+              echo "STACK_NAME=${PROJECT_NAME}Stack${STAGE}" >> $GITHUB_ENV
 
-      # - uses: actions/checkout@v3
-      # - uses: actions/setup-python@v4
-      #   with:
-      #     python-version: '3.10'
+        - uses: actions/setup-python@v4
+          with:
+            python-version: '3.11'
+    
+        - name: Installing Dependencies to Deploy
+          run: |
+            npm install -g aws-cdk
+            cd iac
+            pip install -r requirements.txt
 
-      # - name: Install dependencies
-      #   run: |
-      #     npm install -g aws-cdk
-      #     cd iac
-      #     pip install -r requirements.txt
+        - name: Setup env
+          run: |
+            echo "AWS_REGION=${{ vars.AWS_REGION }}" >> $GITHUB_ENV
+            echo "AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}" >> $GITHUB_ENV
+            echo "GITHUB_REF_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "REPOSITORY_NAME=eureka-2024-repository-${{ github.ref_name }}" >> $GITHUB_ENV
 
-      # - name: Pushing Docker image to AWS ECR repository
-      #   run: |
-      #     if ! aws ecr describe-repositories --repository-names ${{ env.REPOSITORY_NAME }} >/dev/null 2>&1; then
-      #     aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }} --image-scanning-configuration scanOnPush=true
-      #     fi
-      #     aws ecr get-login-password --region us-east-1 | docker login --username AWS  --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-      #     docker build -t ${{ env.REPOSITORY_NAME }} .
-      #     docker tag ${{ env.REPOSITORY_NAME }}:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
-      #     docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
+            echo ${{ env.AWS_REGION }}
+            echo ${{ env.AWS_ACCOUNT_ID }}
+            echo ${{ env.GITHUB_REF_NAME }}
+            echo ${{ env.REPOSITORY_NAME }}
 
-      # - name: Deploying CDK
-      #   run: |
-      #     cd iac
-      #     cdk synth
-      #     cdk deploy --require-approval never
-      #   env:
-      #     AWS_REGION: us-east-1
-      #     STACK_NAME: ${{ env.STACK_NAME }}
-      #     STAGE: ${{ github.ref_name }}
-      #     REPOSITORY_NAME: ${{ env.REPOSITORY_NAME }}
-
+        - name: Deploying CDK
+          run: |
+            cd iac
+            cdk synth
+            cdk deploy --require-approval never
+          env:
+            STAGE: ${{ env.GITHUB_REF_NAME }}
+            AWS_REGION: ${{ env.AWS_REGION }}
+            STACK_NAME: ${{ env.STACK_NAME }}
+            REPOSITORY_NAME: ${{ env.REPOSITORY_NAME }}

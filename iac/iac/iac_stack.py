@@ -1,38 +1,36 @@
 import os
-
 from aws_cdk import (
     Stack,
-    aws_ec2 as ec2, aws_ecs as ecs, aws_ecs_patterns as ecs_patterns,
-    aws_ecr as ecr
+    RemovalPolicy
 )
-
 from constructs import Construct
+
+
+from .rds_stack import RDSStack
+from .fargate_stack import FargateStack
+from .network_stack import NetworkStack
+
 
 class IacStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        ENVIRONMENT = {
-            "STAGE": os.environ.get("STAGE", "test"),
-            "REPOSITORY_NAME": os.environ.get("REPOSITORY_NAME")
-        }
+        self.STAGE = os.environ.get("STAGE")
+        self.project_name = os.environ.get("PROJECT_NAME")
+        self.respository_name = os.environ.get("REPOSITORY_NAME")
 
-        vpc = ec2.Vpc(self, "EurekaApiVPC", max_azs=2)
+        REMOVAL_POLICY = RemovalPolicy.RETAIN if 'prod' in self.STAGE else RemovalPolicy.DESTROY
 
-        cluster = ecs.Cluster(self, "EurekaApiCluster", vpc=vpc)
+        self.network_stack = NetworkStack(self, "EurekaNetworkStack")
 
-        repository = ecr.Repository.from_repository_name(self, "EurekaApiRepository", repository_name=ENVIRONMENT["REPOSITORY_NAME"])
+        self.rds_stack = RDSStack(self, self.network_stack.vpc)
 
-        ecs_patterns.ApplicationLoadBalancedFargateService(
-            self, "EurekaApiService",
-            cluster=cluster,
-            memory_limit_mib=1024,
-            cpu=512,
-            task_image_options={
-                "image": ecs.ContainerImage.from_ecr_repository(repository, tag="latest"),
-                "container_port": 8000,
-            },
-            public_load_balancer=True,
-            assign_public_ip=True
+        self.fargate_stack = FargateStack(
+            self,
+            "EurekaFargateStack",
+            rds_instance=self.rds_stack.rds, 
+            vpc=self.network_stack.vpc,
+            ecs_cluster=self.network_stack.ecs_cluster, 
+            repository_name=self.respository_name
         )

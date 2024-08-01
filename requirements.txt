@@ -5,3 +5,5 @@ pytest-django==4.8.0
 factory-boy==3.3.0
 pytest-factoryboy==2.7.0
 python-dotenv==1.0.1
+django-cors-headers==4.3.1
+

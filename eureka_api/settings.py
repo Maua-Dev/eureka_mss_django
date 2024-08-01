@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 import dotenv
+import os
+import dotenv
 from pathlib import Path
 
 # Load environment variables
@@ -30,9 +32,7 @@ SECRET_KEY = 'django-insecure-&_0=l(yyud@f2kt67^1e)h^#_=gu!u8s*h7fnwtf2)e$1hk=x1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    "*"
-] # THIS NEEDS TO BE CHANGED TO THE DOMAIN OF THE APPLICATION
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders'
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,7 +56,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    'https://localhost:3000',
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'eureka_api.urls'
 
@@ -81,11 +92,11 @@ WSGI_APPLICATION = 'eureka_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-NAME = os.getenv('PG_DB')
-USER = os.getenv('PG_USER')
-PASSWORD = os.getenv('PG_PASSWORD')
-HOST = os.getenv('PG_HOST')
-PORT = os.getenv('PG_PORT')
+NAME = os.environ.get('DB_NAME')
+USER = os.environ.get('DB_USER')
+PASSWORD = os.environ.get('DB_PASSWORD')
+HOST = os.environ.get('DB_HOST')
+PORT = os.environ.get('DB_PORT')
 
 DATABASES = {
     'default': {
@@ -95,9 +106,13 @@ DATABASES = {
         'PASSWORD': PASSWORD,
         'HOST': HOST,
         'PORT': PORT,
+        'NAME': NAME,
+        'USER': USER,
+        'PASSWORD': PASSWORD,
+        'HOST': HOST,
+        'PORT': PORT,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
