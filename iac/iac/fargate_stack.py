@@ -23,6 +23,7 @@ class FargateStack(Construct):
         task_min_scaling_capacity: int = 2,
         task_max_scaling_capacity: int = 4,
         database_name: str = None,
+        stage: str = None,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id)
@@ -54,9 +55,9 @@ class FargateStack(Construct):
                 container_name=self.container_name,
                 container_port=8000,
                 environment={
-                    "STAGE": "DEV",
+                    "STAGE": stage,
                     "DJANGO_SETTINGS_MODULE": "eureka_api.settings",
-                    "DB_NAME": "database_name",
+                    "DB_NAME": database_name,
                     "DB_USER": rds_instance.secret.secret_value_from_json("username").unsafe_unwrap(),
                     "DB_PASSWORD": rds_instance.secret.secret_value_from_json("password").unsafe_unwrap(),
                     "DB_HOST": rds_instance.db_instance_endpoint_address,

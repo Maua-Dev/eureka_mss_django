@@ -30,5 +30,6 @@ class IacStack(Stack):
             rds_instance=self.rds_stack.rds, 
             vpc=self.network_stack.vpc,
             ecs_cluster=self.network_stack.ecs_cluster,
-            database_name=DB_NAME
+            database_name=DB_NAME,
+            stage=self.STAGE
         )
