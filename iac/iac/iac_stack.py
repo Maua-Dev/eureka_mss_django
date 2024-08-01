@@ -19,7 +19,7 @@ class IacStack(Stack):
 
         DB_NAME = "eureka_db"
 
-        self.network_stack = NetworkStack(self, "EurekaNetworkStack")
+        self.network_stack = NetworkStack(scope=self)
 
         self.rds_stack = RDSStack(self, self.network_stack.vpc, DB_NAME)
 
