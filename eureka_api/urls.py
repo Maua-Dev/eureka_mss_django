@@ -23,6 +23,10 @@ from app.views.project_views import ProjectViews
 from app.views.user_views import UserViews
 
 urlpatterns = [
+    
+    # StatusViews
+    path("", StatusViews.status, name="status"),
+
     # TaskViews
     path('get_all_tasks', TaskViews.get_all_tasks, name='get_all_tasks'),
     
