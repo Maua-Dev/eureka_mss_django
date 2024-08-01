@@ -20,14 +20,24 @@ from app.views.delivery_views import DeliveryViews
 from app.views.status import StatusViews
 from app.views.task_views import TaskViews
 from app.views.project_views import ProjectViews
+from app.views.user_views import UserViews
 
 urlpatterns = [
+    # TaskViews
     path('get_all_tasks', TaskViews.get_all_tasks, name='get_all_tasks'),
+    
+    # ProjectViews
     path('create_project', ProjectViews.create_project, name='create_project'),
     path('update_project', ProjectViews.update_project, name='update_project'),
     path('get_project', ProjectViews.get_project, name='get_project'),
     path('get_projects_by_role', ProjectViews.get_projects_by_role, name='get_projects_by_role'),
+    
+    # DeliveryViews
     path('create_delivery', DeliveryViews.create_delivery, name='create_delivery'),
     path('get_deliveries', DeliveryViews.get_deliveries, name='get_deliveries'),
-    path('status', StatusViews.status, name='status'),
+    
+    # UserViews
+    path('get_all_students', UserViews.get_all_students, name='get_all_students'),
+    path('get_all_professors', UserViews.get_all_professors, name='get_all_professors')
+    
 ]

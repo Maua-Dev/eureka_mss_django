@@ -1,11 +1,12 @@
-name: Django CD
+name: EurekaApi CD
 
 on:
   workflow_dispatch:
   push:
     branches:
       - dev
-      - deploy-eureka
+      - homolog
+      - prod
 
 jobs:
   DeployToAWS:

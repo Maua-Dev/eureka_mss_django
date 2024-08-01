@@ -1,7 +1,8 @@
 from enum import Enum
 
 
-class USER_ROLE(Enum):
+class TASK_RESPONSIBLE(Enum):
     STUDENT = "STUDENT"
     ADVISOR = "ADVISOR"
     RESPONSIBLE = "RESPONSIBLE"
+    ADMIN = "ADMIN"

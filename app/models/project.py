@@ -7,7 +7,8 @@ class Project(models.Model):
     qualification = models.CharField(max_length=255)
     code = models.CharField(max_length=255)
     shift = models.CharField(max_length=255)
-    professors = models.ManyToManyField('User')
+    advisors = models.ManyToManyField('User', related_name='advisors', blank=True)
+    responsibles = models.ManyToManyField('User', related_name='responsibles', blank=True)
     stand_number = models.CharField(max_length=255)
     is_entrepreneurship = models.BooleanField(default=False)
     students = models.ManyToManyField('User', related_name='students', blank=True)
@@ -21,6 +22,7 @@ class Project(models.Model):
             "shift": self.shift,
             "stand_number": self.stand_number,
             "is_entrepreneurship": self.is_entrepreneurship,
-            "professors": [professor.to_dict() for professor in self.professors.all()] if self.professors != list else [],
+            "advisors": [advisor.to_dict() for advisor in self.advisors.all()] if self.advisors != list else [],
+            "responsibles": [responsible.to_dict() for responsible in self.responsibles.all()] if self.responsibles != list else [],
             "students": [student.to_dict() for student in self.students.all()] if self.students != list else []
         }

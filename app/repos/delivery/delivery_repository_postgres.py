@@ -10,15 +10,18 @@ class DeliveryRepositoryPostgres(IDeliveryRepository):
 
     def create_delivery(self, delivery: dict, user: dict, task: dict, project: dict):
         try:
-            professors = set([User(**user) for user in project["professors"]])
+            advisors = set([User(**user) for user in project["advisors"]])
+            responsibles = set([User(**user) for user in project["responsibles"]])
             students = set([User(**user) for user in project["students"]])
             
-            project.pop("professors")
+            project.pop("advisors")
+            project.pop("responsibles")
             project.pop("students")
             
             project_model = Project(**project)
             
-            project_model.professors.set(professors)
+            project_model.advisors.set(advisors)
+            project_model.responsibles.set(responsibles)
             project_model.students.set(students)
             
             result = Delivery.objects.create(

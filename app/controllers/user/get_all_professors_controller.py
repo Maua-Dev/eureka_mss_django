@@ -1,11 +1,11 @@
 from app.controllers.controller_interface import IController
 from app.helpers.http.django_http_request import DjangoHttpRequest
 from app.helpers.http.http_codes import InternalServerError, OK
-from app.repos.task.task_repository_interface import ITaskRepository
+from app.repos.user.user_repository_interface import IUserRepository
 
 
-class GetAllTasksController(IController):
-    def __init__(self, repo: ITaskRepository):
+class GetAllProfessorsController(IController):
+    def __init__(self, repo: IUserRepository):
         super().__init__(repo)
         self.repo = repo
 
@@ -17,13 +17,12 @@ class GetAllTasksController(IController):
             if len(response_data) == 0:
                 return OK(
                     body=[],
-                    message="No tasks were found"
+                    message="No professors were found"
                 )
-            
             else:
                 return OK(
-                    body=[task.to_dict() for task in response_data] if type(response_data[0]) != dict else response_data, # TODO: Refactor this (entity? repo use to dict? idk)
-                    message="All tasks were successfully retrieved"
+                    body=[professor.to_dict() for professor in response_data] if type(response_data[0]) != dict else response_data, # TODO: Refactor this (entity? repo use to dict? idk)
+                    message="All professors were successfully retrieved"
                 )
 
         except Exception as err:
@@ -35,4 +34,4 @@ class GetAllTasksController(IController):
         pass
 
     def business_logic(self, request: DjangoHttpRequest):
-        return self.repo.get_all_tasks()
+        return self.repo.get_all_professors()

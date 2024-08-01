@@ -1,23 +1,39 @@
 #!/usr/bin/env python3
 import os
 
+# from dotenv import load_dotenv
+
 import aws_cdk as cdk
 
 from iac.iac_stack import IacStack
 
+print("Starting the CDK")
 
 app = cdk.App()
 
+# load_dotenv()
 aws_region = os.environ.get("AWS_REGION")
 aws_account_id = os.environ.get("AWS_ACCOUNT_ID")
 stack_name = os.environ.get("STACK_NAME")
-github_ref_name = os.environ.get("GITHUB_REF_NAME")
 project_name = os.environ.get("PROJECT_NAME")
 
+github_ref_name = os.environ.get("STAGE")
+
+if 'prod' == github_ref_name:
+    stage = 'PROD'
+
+elif 'homolog' == github_ref_name:
+    stage = 'HOMOLOG'
+
+elif 'dev' == github_ref_name:
+    stage = 'DEV'
+
+else:
+    stage = 'TEST'
 
 tags = {
-    'project': project_name,
-    'stage': github_ref_name.upper(),
+    'project': 'EurekaApi',
+    'stage': stage,
     'stack': 'BACK',
     'owner': 'DevCommunity'
 }
