@@ -31,7 +31,7 @@ jobs:
               STAGE=dev 
               PROJECT_NAME=Eureka2024
               echo "PROJECT_NAME=${PROJECT_NAME}" >> $GITHUB_ENV
-              echo "STACK_NAME=${PROJECT_NAME}Stack${STAGE}" >> $GITHUB_ENV
+              echo "STACK_NAME=${PROJECT_NAME}Stack" >> $GITHUB_ENV
 
         - uses: actions/setup-python@v4
           with:
