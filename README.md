@@ -33,25 +33,25 @@ Repository for the Eureka backend microservice, programmed in Python using the D
 
 ### Compose the docker (only first time) 🐋
 
-    cd docker
-    
     docker-compose up -d
 
-### Run the migrations  🤩
-    
-    python manage.py migrate
+### To test in real time, put in your brownser 
 
-### Run the tests 🧪
+    localhost:8000
+
+### Run the tests for mock 🧪
 
     python manage.py test
 
-### To run local set .env file 🤗
+### To run local set .env file according the .env.example file 🤗
 
-    STAGE = TEST
+    cp .env.example .env 
 
-### Run the application in the root folder 🏎️
-    
-    python manage.py runserver
+### Populate DB 
+### Install DBeaver (recommended)
+### Create a connection and select PostgressSQL as your DB  
+### Put host as localhost, port as 5432, and the same user and password that it is in your .env file.
+### Run the querrys that are in the populate_db directory
 
 ## Contributors 💰🤝💰
 
