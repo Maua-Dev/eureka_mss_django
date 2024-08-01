@@ -1,3 +1,5 @@
+-- Description: Script to populate the database with some data for testing purposes
+
 INSERT INTO app_user (user_id, name, email, role) VALUES
 (1, 'VITOR GUIRAO SOLLER', '21.01444-2@maua.br', 'STUDENT'),
 (2, 'JOAO VITOR CHOUERI BRANCO', '21.01075-7@maua.br', 'STUDENT'),
