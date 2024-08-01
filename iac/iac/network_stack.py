@@ -6,7 +6,7 @@ from constructs import Construct
 
 
 class NetworkStack(Construct):
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, **kwargs) -> None:
         super().__init__(scope, "EurekaNetworkStack")
 
         # Our network in the cloud

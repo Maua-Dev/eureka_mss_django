@@ -17,18 +17,7 @@ aws_account_id = os.environ.get("AWS_ACCOUNT_ID")
 stack_name = os.environ.get("STACK_NAME")
 
 github_ref_name = os.environ.get("STAGE")
-
-if 'prod' == github_ref_name:
-    stage = 'PROD'
-
-elif 'homolog' == github_ref_name:
-    stage = 'HOMOLOG'
-
-elif 'dev' == github_ref_name:
-    stage = 'DEV'
-
-else:
-    stage = 'TEST'
+stage = github_ref_name.upper()
 
 tags = {
     'project': 'EurekaApi',

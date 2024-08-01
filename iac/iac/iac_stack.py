@@ -1,7 +1,6 @@
 import os
 from aws_cdk import (
     Stack,
-    RemovalPolicy
 )
 from constructs import Construct
 

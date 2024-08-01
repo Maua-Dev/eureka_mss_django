@@ -1,7 +1,4 @@
-import os
-
 from aws_cdk import (
-    CfnOutput,
     aws_rds as rds,
     RemovalPolicy,
     aws_ec2 as ec2,
