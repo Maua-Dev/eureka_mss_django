@@ -32,6 +32,7 @@ class RDSStack(Construct):
             storage_type=rds.StorageType.GP3,
             allocated_storage=20,
             max_allocated_storage=100,
+            vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
         )
 
         self.rds.connections.allow_default_port_from_any_ipv4()
