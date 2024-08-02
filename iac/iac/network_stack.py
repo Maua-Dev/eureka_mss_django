@@ -18,6 +18,3 @@ class NetworkStack(Construct):
             enable_dns_support=True,
         )
         self.ecs_cluster = ecs.Cluster(self, f"EurekaECSCluster", vpc=self.vpc)
-        # Add VPC endpoints to keep the traffic inside AWS
-
-

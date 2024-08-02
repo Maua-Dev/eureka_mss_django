@@ -66,3 +66,11 @@ class FargateStack(Construct):
             public_load_balancer=True,
             assign_public_ip=True,
         )
+
+        # Capturing the Fargate dns name
+        alb_dns = self.alb_fargate_service.load_balancer.load_balancer_dns_name
+
+        # Adding the Fargate host to the environment
+        self.alb_fargate_service.task_definition.default_container.add_environment(
+            "DJANGO_ALLOWED_HOSTS", alb_dns
+        )
