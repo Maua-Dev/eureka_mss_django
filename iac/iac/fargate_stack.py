@@ -74,10 +74,3 @@ class FargateStack(Construct):
             unhealthy_threshold_count=2,
         )
 
-        # Capturing the Fargate dns name
-        alb_dns = self.alb_fargate_service.load_balancer.load_balancer_dns_name
-
-        # Adding the Fargate host to the environment
-        self.alb_fargate_service.task_definition.default_container.add_environment(
-            "DJANGO_ALLOWED_HOSTS", alb_dns
-        )
