@@ -16,6 +16,7 @@ class STAGE(Enum):
     HOMOLOG = "HOMOLOG"
     PROD = "PROD"
     TEST = "TEST"
+    TEST_DB = "TEST_DB"
 
 
 class Environments:
@@ -33,17 +34,26 @@ class Environments:
         if "STAGE" not in os.environ:
             os.environ["STAGE"] = STAGE.TEST.value
 
+
     def load_envs(self):
         if "STAGE" not in os.environ or os.environ["STAGE"] == STAGE.DOTENV.value:
             self._configure_local()
 
         self.stage = STAGE[os.environ.get("STAGE")]
-
-        # ADD OTHER ENVIRONMENT VARIABLES HERE
-        # if self.stage == STAGE.TEST:
-        #
-        #
-        # else:
+        self.s3_bucket_name = os.environ.get("S3_BUCKET_NAME")
+        self.db_config = {
+            "NAME": os.environ.get("DB_NAME"),
+            "USER": os.environ.get("DB_USER"),
+            "PASSWORD": os.environ.get("DB_PASSWORD"),
+            "HOST": os.environ.get("DB_HOST"),
+            "PORT": os.environ.get("DB_PORT"),
+        }
+        if self.stage in [STAGE.TEST, STAGE.TEST_DB]:
+            self.s3_localstack = {
+                "endpoint_url": "http://localhost:9000",
+                "aws_access_key_id": os.environ.get("LOCALSTACK_ACCESS_KEY"),
+                "aws_secret_access_key": os.environ.get("LOCALSTACK_SECRET_KEY"),
+            }
 
     @staticmethod
     def get_task_repo() -> Type[ITaskRepository]:
@@ -51,7 +61,7 @@ class Environments:
             from app.repos.task.task_repository_mock import TaskRepositoryMock
             return TaskRepositoryMock
 
-        elif Environments.get_envs().stage in [STAGE.DEV, STAGE.HOMOLOG, STAGE.PROD]:
+        elif Environments.get_envs().stage in [STAGE.TEST_DB, STAGE.DEV, STAGE.HOMOLOG, STAGE.PROD]:
             from app.repos.task.task_repository_postgres import TaskRepositoryPostgres
             return TaskRepositoryPostgres
 
