@@ -25,7 +25,7 @@ from app.views.user_views import UserViews
 urlpatterns = [
     
     # StatusViews
-    path("", StatusViews.status, name="status"),
+    path("status/", StatusViews.status, name="health_check"),
 
     # TaskViews
     path('get_all_tasks', TaskViews.get_all_tasks, name='get_all_tasks'),
