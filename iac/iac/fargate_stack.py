@@ -67,6 +67,13 @@ class FargateStack(Construct):
             assign_public_ip=True,
         )
 
+        # Configure the target group health check
+        self.alb_fargate_service.target_group.configure_health_check(
+            path="/status/",
+            healthy_threshold_count=3,
+            unhealthy_threshold_count=2,
+        )
+
         # Capturing the Fargate dns name
         alb_dns = self.alb_fargate_service.load_balancer.load_balancer_dns_name
 
