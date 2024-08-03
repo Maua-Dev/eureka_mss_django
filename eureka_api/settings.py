@@ -10,17 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-import os
-import dotenv
-import os
-import dotenv
 from pathlib import Path
-
-# Load environment variables
-dotenv.load_dotenv()
+from app.environments import Environments
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+ENVIROMENT = Environments.get_envs()
 
 
 # Quick-start development settings - unsuitable for production
@@ -86,20 +82,10 @@ WSGI_APPLICATION = 'eureka_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-NAME = os.environ.get('DB_NAME')
-USER = os.environ.get('DB_USER')
-PASSWORD = os.environ.get('DB_PASSWORD')
-HOST = os.environ.get('DB_HOST')
-PORT = os.environ.get('DB_PORT')
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': NAME,
-        'USER': USER,
-        'PASSWORD': PASSWORD,
-        'HOST': HOST,
-        'PORT': PORT,
+        **ENVIROMENT.db_config
     }
 }
 
