@@ -4,6 +4,7 @@ from aws_cdk import (
     aws_ecs_patterns as ecs_patterns,
     aws_rds as rds,
     aws_elasticloadbalancingv2 as elbv2,
+    aws_s3 as s3,
 )
 from constructs import Construct
 
@@ -15,6 +16,7 @@ class FargateStack(Construct):
         construct_id: str,
         vpc: ec2.Vpc,
         ecs_cluster: ecs.Cluster,
+        s3: s3.Bucket,
         rds_instance: rds.DatabaseInstance,
         task_cpu: int = 256,
         task_memory_mib: int = 1024,
@@ -61,6 +63,7 @@ class FargateStack(Construct):
                     "DB_PASSWORD": rds_instance.secret.secret_value_from_json("password").unsafe_unwrap(),
                     "DB_HOST": rds_instance.db_instance_endpoint_address,
                     "DB_PORT": rds_instance.db_instance_endpoint_port,
+                    "S3_BUCKET_NAME": s3.bucket_name,
                 },
             ),
             public_load_balancer=True,
