@@ -103,10 +103,11 @@ class CreateDeliveryController(IController):
                 user_role = "RESPONSIBLE"
         
         if user_role == "STUDENT":
-            students_id = project['students']
+            students = project['students']
+            students_id = [student['user_id'] for student in students]
             if user['user_id'] not in students_id:
                 raise StudentNotInProject()
-        
+            
         if user_role == 'STUDENT' and task['responsible'] in ['ADVISOR', 'RESPONSIBLE', 'ADMIN']:
             raise StudentForbiddenAction()
     
