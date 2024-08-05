@@ -11,6 +11,6 @@ class Task(models.Model):
         return {
             "task_id": self.task_id,
             "title": self.title,
-            "delivery_date": self.delivery_date.isoformat(),
+            "delivery_date": self.delivery_date.strftime("%Y-%m-%d"),
             "responsible": self.responsible
         }
