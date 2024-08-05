@@ -32,7 +32,7 @@ class DeliveryRepositoryPostgres(IDeliveryRepository):
             )
             result.save()
 
-            delivery_dict = result.__dict__
+            delivery_dict = result.to_dict()
 
             return delivery_dict
         

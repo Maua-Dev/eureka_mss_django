@@ -1,5 +1,3 @@
-import json
-
 from app.controllers.controller_interface import IController
 from app.helpers.errors.common_errors import AdvisorForbiddenAction, ObjectNotFound, MissingParameters, ProjectNotFound, RequestNotFound, ResponsibleForbiddenAction, RoleForbiddenAction, StudentForbiddenAction, StudentNotInProject, TaskNotFound, TeacherNotInProject, UserNotFound
 from app.helpers.http.http_codes import Created, BadRequest, InternalServerError, NotFound, Forbidden
