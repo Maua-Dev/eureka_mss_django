@@ -15,6 +15,6 @@ class Delivery(models.Model):
             "task": self.task.to_dict() if self.task != dict else self.task,
             "project": self.project.to_dict() if self.project != dict else self.project,
             "user": self.user.to_dict() if self.user != dict else self.user,
-            "date": self.date,
+            "date": self.date.strftime("%Y-%m-%d %H:%M:%S"),
             "content": self.content,
         }
