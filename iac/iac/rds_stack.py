@@ -33,7 +33,7 @@ class RDSStack(Construct):
             },
             instances=1,
             default_database_name=database_name,
-            removal_policy=RemovalPolicy,
+            removal_policy=RemovalPolicy.DESTROY,
             credentials=rds.Credentials.from_generated_secret("postgres"),
         )
         
