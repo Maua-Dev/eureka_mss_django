@@ -22,7 +22,7 @@ class RDSStack(Construct):
                     ec2.InstanceClass.T3, ec2.InstanceSize.MICRO
                 ),
                 "vpc_subnets": {
-                    "subnet_type": ec2.SubnetType.PRIVATE
+                    "subnet_type": ec2.SubnetType.PUBLIC
                 },
                 "vpc": vpc,
                 "security_group": ec2.SecurityGroup(
