@@ -15,8 +15,8 @@ class RDSStack(Construct):
         self.rds = rds.DatabaseInstance(
             self,
             "EurekaRDS",
-            engine=rds.DatabaseInstanceEngine.aurora_postgres(
-                version=rds.AuroraPostgresEngineVersion.VER_13_6
+            engine=rds.DatabaseClusterEngine.aurora_postgres(
+                version=rds.AuroraPostgresEngineVersion.VER_15_6
             ),
             instance_type=ec2.InstanceType.of(
                 ec2.InstanceClass.T3, ec2.InstanceSize.MICRO
