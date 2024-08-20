@@ -25,11 +25,11 @@ class RDSStack(Construct):
                     "subnet_type": ec2.SubnetType.PUBLIC
                 },
                 "vpc": vpc,
-                "security_group": ec2.SecurityGroup(
+                "security_groups": [ec2.SecurityGroup(
                     self, "EurekaRDSSecurityGroup",
                     vpc=vpc,
                     allow_all_outbound=True
-                )
+                )]
             },
             instances=1,
             default_database_name=database_name,
