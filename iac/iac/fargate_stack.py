@@ -45,9 +45,9 @@ class FargateStack(Construct):
             protocol=elbv2.ApplicationProtocol.HTTP,
             platform_version=ecs.FargatePlatformVersion.VERSION1_4,
             cluster=self.ecs_cluster,  # Required
-            cpu=self.task_cpu,  # Default is 256
-            memory_limit_mib=self.task_memory_mib,  # Default is 512
-            desired_count=self.task_desired_count,  # Default is 1
+            cpu=self.task_cpu,
+            memory_limit_mib=self.task_memory_mib,
+            desired_count=self.task_desired_count,
             task_image_options=ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
                 image=ecs.ContainerImage.from_asset(
                     directory="../",
@@ -67,7 +67,6 @@ class FargateStack(Construct):
                 },
             ),
             public_load_balancer=True,
-            assign_public_ip=True,
         )
 
         # Configure the target group health check
@@ -76,4 +75,3 @@ class FargateStack(Construct):
             healthy_threshold_count=3,
             unhealthy_threshold_count=2,
         )
-

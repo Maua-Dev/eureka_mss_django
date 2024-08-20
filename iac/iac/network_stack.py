@@ -13,7 +13,8 @@ class NetworkStack(Construct):
         self.vpc = ec2.Vpc(
             self,
             "EurekaVPC",
-            max_azs=2,  # default is all AZs in region
+            max_azs=2,
+            nat_gateways=0,
             enable_dns_hostnames=True,
             enable_dns_support=True,
         )

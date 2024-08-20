@@ -15,8 +15,8 @@ class RDSStack(Construct):
         self.rds = rds.DatabaseInstance(
             self,
             "EurekaRDS",
-            engine=rds.DatabaseInstanceEngine.postgres(
-                version=rds.PostgresEngineVersion.VER_15_4
+            engine=rds.DatabaseInstanceEngine.aurora_postgres(
+                version=rds.AuroraPostgresEngineVersion.VER_13_6
             ),
             instance_type=ec2.InstanceType.of(
                 ec2.InstanceClass.T3, ec2.InstanceSize.MICRO
@@ -25,14 +25,12 @@ class RDSStack(Construct):
             credentials=rds.Credentials.from_generated_secret("postgres"),
             removal_policy=RemovalPolicy.DESTROY,
             database_name=database_name,
-            publicly_accessible=True,
             storage_type=rds.StorageType.GP3,
             allocated_storage=20,
             max_allocated_storage=100,
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
+            publicly_accessible=True,
         )
 
         self.rds.connections.allow_default_port_from_any_ipv4()
-
-
 
