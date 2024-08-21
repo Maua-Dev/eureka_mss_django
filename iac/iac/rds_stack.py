@@ -19,14 +19,6 @@ class RDSStack(Construct):
             ),
             default_database_name=database_name,
             removal_policy=RemovalPolicy.DESTROY,
-            instance_props=rds.InstanceProps(
-                instance_type=ec2.InstanceType.of(
-                    ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.SMALL
-                ),
-                vpc_subnets= ec2.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
-                vpc=vpc,
-            ),
-            instances=1,
             serverless_v2_max_capacity=1,
             serverless_v2_min_capacity=0.5,
             credentials=rds.Credentials.from_generated_secret("postgres"),
