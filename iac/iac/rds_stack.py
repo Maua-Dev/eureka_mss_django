@@ -23,7 +23,7 @@ class RDSStack(Construct):
                 instance_type=ec2.InstanceType.of(
                     ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.SMALL
                 ),
-                vpc_subnets= rds.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
+                vpc_subnets= ec2.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
                 vpc=vpc,
             ),
             instances=1,
