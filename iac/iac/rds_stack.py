@@ -19,6 +19,7 @@ class RDSStack(Construct):
             ),
             default_database_name=database_name,
             removal_policy=RemovalPolicy.DESTROY,
+            vpc=vpc,
             serverless_v2_max_capacity=1,
             serverless_v2_min_capacity=0.5,
             credentials=rds.Credentials.from_generated_secret("postgres"),
