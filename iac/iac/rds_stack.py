@@ -11,22 +11,24 @@ class RDSStack(Construct):
     def __init__(self, scope: Construct, vpc: ec2.Vpc, database_name: str) -> None:
         super().__init__(scope, "EurekaRDSStack")
 
-        self.rds = rds.DatabaseCluster(
+        self.rds = rds.DatabaseInstance(
             self,
             "EurekaRDS",
-            engine=rds.DatabaseClusterEngine.aurora_postgres(
-                version=rds.AuroraPostgresEngineVersion.VER_15_6
+            engine=rds.DatabaseInstanceEngine.postgres(
+                version=rds.PostgresEngineVersion.VER_15_4
             ),
-            default_database_name=database_name,
-            removal_policy=RemovalPolicy.DESTROY,
-            instances=1,
-            instance_props=ec2.InstanceProps(
-                vpc=vpc,
-                vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
+            instance_type=ec2.InstanceType.of(
+                ec2.InstanceClass.T3, ec2.InstanceSize.MICRO
             ),
-            serverless_v2_max_capacity=1,
-            serverless_v2_min_capacity=0.5,
+            vpc=vpc,
             credentials=rds.Credentials.from_generated_secret("postgres"),
+            removal_policy=RemovalPolicy.DESTROY,
+            database_name=database_name,
+            publicly_accessible=True,
+            storage_type=rds.StorageType.GP3,
+            allocated_storage=20,
+            max_allocated_storage=100,
+            vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
         )
         
         self.rds.connections.allow_default_port_from_any_ipv4()
