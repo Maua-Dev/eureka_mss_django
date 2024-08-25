@@ -29,7 +29,7 @@ class IacStack(Stack):
         self.fargate_stack = FargateStack(
             self,
             "EurekaFargateStack",
-            rds_cluster=self.rds_stack.rds, 
+            rds_instance=self.rds_stack.rds,
             vpc=self.network_stack.vpc,
             ecs_cluster=self.network_stack.ecs_cluster,
             s3=self.s3_stack.bucket,
