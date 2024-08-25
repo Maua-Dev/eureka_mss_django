@@ -1,6 +1,7 @@
 from aws_cdk import (
     aws_ec2 as ec2,
     aws_ecs as ecs,
+    aws_iam as iam,
     aws_ecs_patterns as ecs_patterns,
     aws_rds as rds,
     aws_elasticloadbalancingv2 as elbv2,
@@ -69,7 +70,20 @@ class FargateStack(Construct):
             public_load_balancer=True,
         )
 
-        # Configure the target group health check
-        self.alb_fargate_service.target_group.configure_health_check(
-            path="/status/"
+        # Configure the autoscaling policy
+        self.alb_fargate_service.service.auto_scale_task_count(
+            min_capacity=self.task_min_scaling_capacity,
+            max_capacity=self.task_max_scaling_capacity,
+        )
+
+        # Grant the task role read/write permissions to the S3 bucket
+        self.alb_fargate_service.task_definition.task_role.add_to_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "s3:*",
+                ],
+                resources=[
+                    f"{s3.bucket_arn}/*",
+                ],
+            )
         )
