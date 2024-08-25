@@ -1,11 +1,11 @@
 from aws_cdk import (
     aws_ec2 as ec2,
     aws_ecs as ecs,
-    aws_iam as iam,
     aws_ecs_patterns as ecs_patterns,
     aws_rds as rds,
     aws_elasticloadbalancingv2 as elbv2,
     aws_s3 as s3,
+    aws_iam as iam,
 )
 from constructs import Construct
 
@@ -18,7 +18,7 @@ class FargateStack(Construct):
         vpc: ec2.Vpc,
         ecs_cluster: ecs.Cluster,
         s3: s3.Bucket,
-        rds_cluster: rds.DatabaseInstance,
+        rds_instance: rds.DatabaseInstance,
         task_cpu: int = 256,
         task_memory_mib: int = 1024,
         task_desired_count: int = 1,
@@ -45,10 +45,10 @@ class FargateStack(Construct):
             f"EurekaDjangoAppService",
             protocol=elbv2.ApplicationProtocol.HTTP,
             platform_version=ecs.FargatePlatformVersion.VERSION1_4,
-            cluster=self.ecs_cluster,
-            cpu=self.task_cpu,
-            memory_limit_mib=self.task_memory_mib,
-            desired_count=self.task_desired_count,
+            cluster=self.ecs_cluster,  # Required
+            cpu=self.task_cpu,  # Default is 256
+            memory_limit_mib=self.task_memory_mib,  # Default is 512
+            desired_count=self.task_desired_count,  # Default is 1
             task_image_options=ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
                 image=ecs.ContainerImage.from_asset(
                     directory="../",
@@ -57,33 +57,37 @@ class FargateStack(Construct):
                 container_name=self.container_name,
                 container_port=8000,
                 environment={
-                    "STAGE": str(stage),
+                    "STAGE": stage,
                     "DJANGO_SETTINGS_MODULE": "eureka_api.settings",
-                    "DB_NAME": str(database_name),
-                    "DB_USER": str(rds_cluster.secret.secret_value_from_json("username").unsafe_unwrap()),
-                    "DB_PASSWORD": str(rds_cluster.secret.secret_value_from_json("password").unsafe_unwrap()),
-                    "DB_HOST": str(rds_cluster.instance_endpoint.hostname),
-                    "DB_PORT": str(rds_cluster.instance_endpoint.port),
-                    "S3_BUCKET_NAME": str(s3.bucket_name),
+                    "DB_NAME": database_name,
+                    "DB_USER": rds_instance.secret.secret_value_from_json("username").unsafe_unwrap(),
+                    "DB_PASSWORD": rds_instance.secret.secret_value_from_json("password").unsafe_unwrap(),
+                    "DB_HOST": rds_instance.db_instance_endpoint_address,
+                    "DB_PORT": rds_instance.db_instance_endpoint_port,
+                    "S3_BUCKET_NAME": s3.bucket_name,
                 },
             ),
             public_load_balancer=True,
+            assign_public_ip=True,
         )
 
-        # Configure the autoscaling policy
+        # Configure the target group health check
+        self.alb_fargate_service.target_group.configure_health_check(
+            path="/status/",
+            healthy_threshold_count=3,
+            unhealthy_threshold_count=2,
+        )
+
         self.alb_fargate_service.service.auto_scale_task_count(
             min_capacity=self.task_min_scaling_capacity,
             max_capacity=self.task_max_scaling_capacity,
         )
 
-        # Grant the task role read/write permissions to the S3 bucket
+        # Grant the ECS task permissions to access the S3 bucket
         self.alb_fargate_service.task_definition.task_role.add_to_policy(
             iam.PolicyStatement(
-                actions=[
-                    "s3:*",
-                ],
-                resources=[
-                    f"{s3.bucket_arn}/*",
-                ],
+                actions=["s3:*"],
+                resources=[f"{s3.bucket_arn}/*"],
             )
         )
+

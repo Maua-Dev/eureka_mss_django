@@ -3,7 +3,6 @@ from aws_cdk import (
     RemovalPolicy,
     aws_ec2 as ec2,
 )
-import aws_cdk as cdk
 from constructs import Construct
 
 
@@ -30,5 +29,5 @@ class RDSStack(Construct):
             max_allocated_storage=100,
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
         )
-        
+
         self.rds.connections.allow_default_port_from_any_ipv4()
