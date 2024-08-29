@@ -3,7 +3,6 @@ from app.helpers.enum.http_status_code_enum import HttpStatusCodeEnum
 from app.helpers.http.http_models import HttpResponseModel
 
 
-
 class OK(HttpResponseModel):
     def __init__(self, body: dict = None, message: str = None) -> None:
         super().__init__(
@@ -20,7 +19,6 @@ class Created(HttpResponseModel):
             message=message,
             body=body
         )
-
 
 class NoContent(HttpResponseModel):
     def __init__(self, body: dict = None, message: str = None) -> None:
@@ -52,7 +50,7 @@ class InternalServerError(HttpResponseModel):
 class NotFound(HttpResponseModel):
     def __init__(self, body: dict = None, message: str = None) -> None:
         super().__init__(
-            status_code=HttpStatusCodeEnum.NOT_FOUND.value, 
+            status_code=HttpStatusCodeEnum.NOT_FOUND.value,
             message=message,
             body=body
         )

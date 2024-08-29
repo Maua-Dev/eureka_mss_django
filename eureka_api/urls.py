@@ -21,6 +21,7 @@ from app.views.status import StatusViews
 from app.views.task_views import TaskViews
 from app.views.project_views import ProjectViews
 from app.views.user_views import UserViews
+from app.views.request_url_views import RequestUrlViews
 
 urlpatterns = [
     
@@ -42,6 +43,9 @@ urlpatterns = [
     
     # UserViews
     path('get_all_students', UserViews.get_all_students, name='get_all_students'),
-    path('get_all_professors', UserViews.get_all_professors, name='get_all_professors')
+    path('get_all_professors', UserViews.get_all_professors, name='get_all_professors'),
+
+    # RequestUrlView
+    path('request_url', RequestUrlViews.request_url, name='request_url')
     
 ]
