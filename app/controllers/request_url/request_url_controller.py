@@ -22,7 +22,7 @@ class RequestGenerateUrlController(IController):
                 message="The presigned url was generated successfully"
             )
 
-        except MissingParameters as e:
+        except MissingParameters as e: 
             return BadRequest(
                 message=str(e)
             )
@@ -44,7 +44,11 @@ class RequestGenerateUrlController(IController):
 
     def error_handling(self, request: HttpRequestModel):
         try:
-            if request.method != "GET":
+            # if request.method != "GET":
+            #     raise MethodNotAllowed(method=request.method,
+            #                            route='get_presigned_url')
+            
+            if request.method != "POST":
                 raise MethodNotAllowed(method=request.method,
                                        route='get_presigned_url')
 

@@ -51,6 +51,9 @@ class HelperGenerateUrl:
             raise e
 
         cloud_front_distribution_domain_assets = Environments.get_envs().cloud_front_distribution_domain_assets
+        if cloud_front_distribution_domain_assets is None:
+            cloud_front_distribution_domain_assets = ""  
+
 
         presigned_url = presigned_url.replace(
             f"{self.S3_BUCKET_NAME}.s3.amazonaws.com", cloud_front_distribution_domain_assets)

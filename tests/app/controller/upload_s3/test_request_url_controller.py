@@ -15,7 +15,7 @@ class Test_RequestUrlController(TestCase):
                 "upload_type": "mp4",
                 "file_name": "video_projeto_1"
             },
-            method="GET"
+            method="POST"
         )
 
         response = controller(request)
@@ -29,10 +29,11 @@ class Test_RequestUrlController(TestCase):
         request = DjangoHttpRequest(
             request=None,
             data={
+                "project_id": None,
                 "upload_type": "mp4",
                 "file_name": "video_projeto_1"
             },
-            method="GET"
+            method="POST"
         )
 
         response = controller(request)
@@ -40,15 +41,16 @@ class Test_RequestUrlController(TestCase):
         assert response.status_code == 400
         assert response.message == 'Field project_id is missing for method get_presigned_url'
 
-    def test_request_url_controller_missing_upload_type(self):
+    def test_request_url_controller_missing_upload_type(self): #Erro aqui
         controller = RequestGenerateUrlController()
         request = DjangoHttpRequest(
             request=None,
             data={
                 "project_id": 1,
+                "upload_type": None,
                 "file_name": 'hello'
             },
-            method="GET"
+            method="POST"
         )
 
         response = controller(request)
@@ -62,9 +64,10 @@ class Test_RequestUrlController(TestCase):
             request=None,
             data={
                 "project_id": 1,
-                "upload_type": 'video'
+                "upload_type": 'video',
+                "file_name": None
             },
-            method="GET"
+            method="POST"
         )
 
         response = controller(request)
@@ -72,7 +75,7 @@ class Test_RequestUrlController(TestCase):
         print(response)
 
         assert response.status_code == 400
-        assert response.message == "Field upload_type is missing for method get_presigned_url"
+        assert response.message == "Field file_name is missing for method get_presigned_url"
 
     def test_request_url_controller_missing_multiple_params(self):
         controller = RequestGenerateUrlController()
@@ -81,7 +84,7 @@ class Test_RequestUrlController(TestCase):
             data={
                 "project_id": 1
             },
-            method="GET"
+            method="POST"
         )
 
         response = controller(request)
@@ -97,13 +100,13 @@ class Test_RequestUrlController(TestCase):
                 "upload_type": "video",
                 "file_name": "file_name_1"
             },
-            method="PUT"
+            method="POST"
         )
 
         response = controller(request)
 
         assert response.status_code == 403
-        assert response.message == 'Method PUT is not allowed for route get_presigned_url'
+        assert response.message == 'Method POST is not allowed for route get_presigned_url'
 
     def test_request_url_controller_wrong_type_project_id(self):
         controller = RequestGenerateUrlController()
@@ -114,7 +117,7 @@ class Test_RequestUrlController(TestCase):
                 "upload_type": "video",
                 "file_name": "file_name_1"
             },
-            method="GET"
+            method="POST"
         )
 
         response = controller(request)
@@ -131,7 +134,7 @@ class Test_RequestUrlController(TestCase):
                 "upload_type": False,
                 "file_name": "file_name_1"
             },
-            method="GET"
+            method="POST"
         )
 
         response = controller(request)
@@ -148,7 +151,7 @@ class Test_RequestUrlController(TestCase):
                 "upload_type": 'pdf',
                 "file_name": 22112004
             },
-            method="GET"
+            method="POST"
         )
 
         response = controller(request)
