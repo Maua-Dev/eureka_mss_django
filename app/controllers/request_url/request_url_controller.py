@@ -69,7 +69,7 @@ class RequestGenerateUrlController(IController):
                 raise WrongTypeParameter(field='upload_type')
 
             if request.data.get('file_name') is None:
-                raise MissingParameters(field='upload_type',
+                raise MissingParameters(field='file_name',
                                         method='get_presigned_url')
 
             if type(request.data.get('file_name')) is not str:

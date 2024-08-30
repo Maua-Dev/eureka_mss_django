@@ -40,8 +40,8 @@ class Environments:
         self.stage = STAGE[os.environ.get("STAGE")]
         self.s3_bucket_name = os.environ.get("S3_BUCKET_NAME")
         self.region = os.environ.get("AWS_REGION")
-        self.aws_access_key_id = os.environ.get("LOCALSTACK_ACCESS_KEY")
-        self.aws_secret_access_id = os.environ.get("LOCALSTACK_SECRET_KEY")
+        self.aws_access_key_id = os.environ.get("aws_access_key_id")
+        self.aws_secret_access_id = os.environ.get("aws_secret_access_id")
         self.cloud_front_distribution_domain_assets = os.environ.get("CLOUD_FRONT_DISTRIBUTION_DOMAIN_ASSETS")
         self.db_config = {
             "NAME": os.environ.get("DB_NAME"),

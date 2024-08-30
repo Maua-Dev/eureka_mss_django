@@ -100,13 +100,13 @@ class Test_RequestUrlController(TestCase):
                 "upload_type": "video",
                 "file_name": "file_name_1"
             },
-            method="POST"
+            method="GET"
         )
 
         response = controller(request)
 
         assert response.status_code == 403
-        assert response.message == 'Method POST is not allowed for route get_presigned_url'
+        assert response.message == 'Method GET is not allowed for route get_presigned_url'
 
     def test_request_url_controller_wrong_type_project_id(self):
         controller = RequestGenerateUrlController()

@@ -8,7 +8,7 @@ class Test_DeliveryView(TestCase):
         self.factory = RequestFactory()
 
     def test_create_delivery_view(self):
-        request = self.factory.get('/request_url', {
+        request = self.factory.post('/request_url', {
             "project_id": 1,
             "upload_type": "mp4",
             "file_name": "video_projeto_1"
@@ -21,7 +21,7 @@ class Test_DeliveryView(TestCase):
         assert response.status_code == 200
 
     def test_create_delivery_view_bad_request(self):
-        request = self.factory.get('/request_url', {
+        request = self.factory.post('/request_url', {
             "project_id": 'string',
             "upload_type": "mp4",
             "file_name": "video_projeto_1"
